@@ -1,0 +1,69 @@
+import os
+import pandas as pd
+import datetime
+import time
+import random
+from bs4 import BeautifulSoup
+from selenium import webdriver
+
+pd.set_option('display.max_rows', 10)
+pd.set_option('display.max_columns', 5)
+pd.set_option('display.width',800)
+path = 'C:/Users/Macbook/Downloads/archive'
+os.chdir(path)
+
+explanation = """
+to write a crawler you need 
+    1) https://sites.google.com/chromium.org/driver/
+    2) https://github.com/mozilla/geckodriver/releases
+"""
+os.chdir('C:/Users/Macbook/Downloads/archive')
+
+
+# choosing your scraper
+chosen_driver=['Chrome','Firefox'][0]
+if chosen_driver=='Chrome':
+    driver    = webdriver.Chrome()
+if chosen_driver=='Firefox':
+    driver    = webdriver.Firefox()
+
+#Luke's Lobster Back Bay website on Yelp.com
+links_to_scrape = ['https://www.carfax.com/Used-Maserati_m51']
+l        = 0
+one_link = links_to_scrape[l]
+driver.get(one_link)
+
+reviews_one_store = []
+condition = True
+
+#collect all reviews
+while (condition):
+    reviews           = driver.find_elements_by_xpath("//div[@class='great-value value-badge-srp']")
+    r                 = 0
+    for r in range(len(reviews)):
+        one_review                   = {}
+        one_review['scrapping_date'] = datetime.datetime.now()
+        one_review['url']     = driver.current_url
+        #soup                         = BeautifulSoup(reviews[r].get_attribute('innerHTML')) 
+        try:
+            one_review_raw = reviews[r].get_attribute('innerHTML')
+        except:
+            one_review_raw = ""
+        one_review['review_raw'] = one_review_raw
+
+        reviews_one_store.append(one_review)
+    try:
+        driver.find_element_by_xpath("//button[@class='button primary-blue pagination__button pagination__button--right ]").click()
+        time.sleep(random.randint(1,3))
+    except:
+        break  
+    
+# Transform data to a dataframe
+a = pd.DataFrame.from_dict(reviews_one_store)
+b = a.copy()
+b['review_raw'][1]
+
+b['Price'] = b['review_raw'].map(lambda b: BeautifulSoup(b).text).str.extract('([0-9][0-9],[0-9][0-9][0-9])')
+b = b[['Price']]
+b.to_csv('Prices.csv', index = True)
+driver.close()
