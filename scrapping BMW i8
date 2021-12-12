@@ -1,0 +1,39 @@
+import datetime
+import gc
+import os
+import pandas as pd
+import re
+import shelve
+import time
+import datetime
+
+# libraries to crawl websites
+from bs4          import BeautifulSoup
+from selenium     import webdriver
+
+
+pd.set_option('display.max_rows', 10)
+pd.set_option('display.max_columns', 5)
+pd.set_option('display.width',800)
+path = 'C:/Users/Macbook/Downloads/archive'
+os.chdir(path)
+
+explanation = """
+to write a crawler you need 
+    1) https://sites.google.com/chromium.org/driver/
+    2) https://github.com/mozilla/geckodriver/releases
+"""
+os.chdir('C:/Users/Macbook/Downloads/archive')
+
+
+# choosing your scraper
+chosen_driver=['Chrome','Firefox'][0]
+if chosen_driver=='Chrome':
+    driver    = webdriver.Chrome()
+if chosen_driver=='Firefox':
+    driver    = webdriver.Firefox()
+
+# going to a new website for example a wikipedia.
+driver.get('https://www.carfax.com/Used-BMW-i8_w61')
+driver.page_source
+driver.current_url
