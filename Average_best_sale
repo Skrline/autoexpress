@@ -1,8 +1,11 @@
+###Clean:Convert data from a object to a interger and substitute ','with'' in order to caculate the max,min and mean of Car price to supply customer a clear price of a certain model of a car which in second hand car markets.
+
+###import pacakges:
 import pandas as pd
 import numpy as np
 data = pd.read_csv('C:/Users/Macbook/Downloads/archive/prices.csv')
-dp=data['Price'].str.replace(',','').astype(float)
-
+dp=data['Price'].str.replace(',','').astype(float) ##clean data
+###output
 max(dp)
 min(dp)
 np.mean(dp)
