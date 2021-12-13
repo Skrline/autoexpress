@@ -9,3 +9,6 @@ dp=data['Price'].str.replace(',','').astype(float) ##clean data
 max(dp)
 min(dp)
 np.mean(dp)
+
+
+In this way, we can get to know the Max&Min&Average price of the best deal car.
