@@ -1,3 +1,5 @@
+###import pacakges
+
 import os
 import pandas as pd
 import datetime
@@ -5,7 +7,7 @@ import time
 import random
 from bs4 import BeautifulSoup
 from selenium import webdriver
-
+###set up path
 pd.set_option('display.max_rows', 10)
 pd.set_option('display.max_columns', 5)
 pd.set_option('display.width',800)
@@ -20,14 +22,14 @@ to write a crawler you need
 os.chdir('C:/Users/Macbook/Downloads/archive')
 
 
-# choosing your scraper
+# choosing scraper, and set up chrome web drivers
 chosen_driver=['Chrome','Firefox'][0]
 if chosen_driver=='Chrome':
     driver    = webdriver.Chrome()
 if chosen_driver=='Firefox':
     driver    = webdriver.Firefox()
 
-#Luke's Lobster Back Bay website on Yelp.com
+# Scraping Carfax. com
 links_to_scrape = ['https://www.carfax.com/Used-Maserati_m51']
 l        = 0
 one_link = links_to_scrape[l]
@@ -36,7 +38,7 @@ driver.get(one_link)
 reviews_one_store = []
 condition = True
 
-#collect all reviews
+#collect all reviews, scrapping a certain area on the page
 while (condition):
     reviews           = driver.find_elements_by_xpath("//div[@class='great-value value-badge-srp']")
     r                 = 0
@@ -63,7 +65,7 @@ a = pd.DataFrame.from_dict(reviews_one_store)
 b = a.copy()
 b['review_raw'][1]
 
-b['Price'] = b['review_raw'].map(lambda b: BeautifulSoup(b).text).str.extract('([0-9][0-9],[0-9][0-9][0-9])')
-b = b[['Price']]
-b.to_csv('Prices.csv', index = True)
+b['Price'] = b['review_raw'].map(lambda b: BeautifulSoup(b).text).str.extract('([0-9][0-9],[0-9][0-9][0-9])')###Casue the price is xx,xxx, we can just extract the certain price by using beautiful soup
+b = b[['Price']] ###extract a certain item
+b.to_csv('Prices.csv', index = True) ####put the collected data to csv for compute mean, max&min price of certain model of car in secondary car market
 driver.close()
